@@ -26,6 +26,7 @@
 #include <linux/percpu.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+#include <linux/wakeup_reason.h>
 
 /*Add-begin
 **JIRA-id:HMI_L6651_A01-202
@@ -453,10 +454,10 @@ static void gic_show_resume_irq(struct gic_chip_data *gic)
 		else if (desc->action && desc->action->name)
 			name = desc->action->name;
 
-		/*Add-begin
-		**JIRA-id:HMI_L6651_A01-202
-		**Author:lijiang@longcheer.com
-		**Date:2017-10-26
+		log_base_wakeup_reason(irq);
+		pr_warn("%s: %d triggered %s\n", __func__, irq, name);
+
+		/*Add-begin-HMI_M6100_A01-60
 		**Comment:Logging kernel wakeup reson
 		*/
 		log_wakeup_reason(irq);
