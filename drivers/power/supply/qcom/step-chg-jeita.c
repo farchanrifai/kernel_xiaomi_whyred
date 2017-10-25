@@ -192,6 +192,7 @@ static int get_val(struct range_data *range, int hysteresis, int current_index,
 			range[i].high_threshold, threshold)) {
 			*new_index = i;
 			*val = range[i].value;
+			break;
 		}
 
 	/* if nothing was found, return -ENODATA */
@@ -368,7 +369,7 @@ static int handle_jeita(struct step_chg_info *chip)
 
 
 	pr_err("%s = %d FCC = %duA FV = %duV\n",
-		step_chg_config.prop_name, pval.intval, fcc_ua, fv_uv);
+		jeita_fv_config.prop_name, pval.intval, fcc_ua, fv_uv);
 
 update_time:
 	chip->jeita_last_update_time = ktime_get();
