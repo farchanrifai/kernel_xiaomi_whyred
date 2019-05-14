@@ -579,7 +579,7 @@ static void periph_interrupt(struct spmi_pmic_arb *pa, u16 apid, bool show)
 			**Date:2017-10-26
 			**Comment:Logging kernel wakeup reson
 			*/
-			log_wakeup_reason(irq);
+			log_base_wakeup_reason(irq);
 			/*Add-end HMI_L6651_A01-202*/
 
 			pr_warn("spmi_show_resume_irq: %d triggered [0x%01x, 0x%02x, 0x%01x] %s\n",
