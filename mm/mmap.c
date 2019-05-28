@@ -124,8 +124,13 @@ void vma_set_page_prot(struct vm_area_struct *vma)
 	}
 }
 
-
+#if defined(CONFIG_OVERCOMMIT_NEVER)
+int sysctl_overcommit_memory __read_mostly = OVERCOMMIT_NEVER;
+#elif defined(CONFIG_OVERCOMMIT_ALWAYS)
+int sysctl_overcommit_memory __read_mostly = OVERCOMMIT_ALWAYS;
+#else
 int sysctl_overcommit_memory __read_mostly = OVERCOMMIT_GUESS;  /* heuristic overcommit */
+#endif
 int sysctl_overcommit_ratio __read_mostly = 50;	/* default is 50% */
 unsigned long sysctl_overcommit_kbytes __read_mostly;
 int sysctl_max_map_count __read_mostly = DEFAULT_MAX_MAP_COUNT;
