@@ -1012,23 +1012,23 @@ static void mdss_dsi_panel_bl_ctrl(struct mdss_panel_data *pdata,
 	switch (ctrl_pdata->bklt_ctrl) {
 	case BL_WLED:
 		led_trigger_event(bl_led_trigger, bl_level);
-        if(bl_level != 0)
+        if (bl_level != 0)
 		{
               first_set_bl = true;
 	          if(mdss_first_set_feature(pdata, first_ce_state, first_cabc_state, first_srgb_state, first_gamma_state,
 						  first_cabc_movie_state, first_cabc_still_state))
 		            pr_err("%s first set feature fail ! \n", __func__);
 	            else{
-	               first_ce_state=-1;
-	               first_cabc_state=-1;
-	               first_srgb_state=-1;
-	               first_gamma_state=-1;
-			       first_cabc_movie_state=-1;
-				   first_cabc_still_state=-1;
+	               first_ce_state = -1;
+	               first_cabc_state = -1;
+	               first_srgb_state = -1;
+	               first_gamma_state = -1;
+	               first_cabc_movie_state=-1;
+	               first_cabc_still_state=-1;
 	            }
-           } else{
+		} else{
                 first_set_bl = false;
-            }
+            	}
 		break;
 	case BL_PWM:
 		mdss_dsi_panel_bklt_pwm(ctrl_pdata, bl_level);
@@ -1114,29 +1114,21 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 	if (on_cmds->cmd_cnt)
 		mdss_dsi_panel_cmds_send(ctrl, on_cmds, CMD_REQ_COMMIT);
 
-	if(ce_state==14){
-	   if (ce_on_cmds->cmd_cnt)
-	       mdss_dsi_panel_cmds_send(ctrl,ce_on_cmds, CMD_REQ_COMMIT);
-	}
-	if(11 == srgb_state){
-	   if (srgb_on_cmds->cmd_cnt)
-	       mdss_dsi_panel_cmds_send(ctrl,srgb_on_cmds, CMD_REQ_COMMIT);
-	}
-	if(11 == cabc_state){
-		if (cabc_on_cmds->cmd_cnt)
-	       mdss_dsi_panel_cmds_send(ctrl,cabc_on_cmds, CMD_REQ_COMMIT);
-	}
-	if(cabc_movie_state == 1){
-		if (cabc_movie_on_cmds->cmd_cnt)
-	       mdss_dsi_panel_cmds_send(ctrl,cabc_movie_on_cmds, CMD_REQ_COMMIT);
-		pr_info("set cabc movie on\n");
-	}
+	if (ctrl->ce_on_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->ce_on_cmds, CMD_REQ_COMMIT);
 
-	if(cabc_still_state == 1){
-		if (cabc_still_on_cmds->cmd_cnt)
-	       mdss_dsi_panel_cmds_send(ctrl,cabc_still_on_cmds, CMD_REQ_COMMIT);
-		pr_info("set cabc still on\n");
-	}
+	if (ctrl->srgb_on_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->srgb_on_cmds, CMD_REQ_COMMIT);
+
+	if (ctrl->cabc_on_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->cabc_on_cmds, CMD_REQ_COMMIT);
+
+	if (ctrl->cabc_movie_on_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->cabc_movie_on_cmds, CMD_REQ_COMMIT);
+
+	if (ctrl->cabc_still_on_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->cabc_still_on_cmds, CMD_REQ_COMMIT);
+
 	if (pinfo->compression_mode == COMPRESSION_DSC)
 		mdss_dsi_panel_dsc_pps_send(ctrl, pinfo);
 
@@ -1216,6 +1208,15 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 		if (ctrl->off_cmds.cmd_cnt)
 			mdss_dsi_panel_cmds_send(ctrl, &ctrl->off_cmds, CMD_REQ_COMMIT);
 	}
+
+	if (ctrl->ce_off_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->ce_off_cmds, CMD_REQ_COMMIT);
+
+	if (ctrl->srgb_off_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->srgb_off_cmds, CMD_REQ_COMMIT);
+
+	if (ctrl->cabc_off_cmds.cmd_cnt)
+		mdss_dsi_panel_cmds_send(ctrl, &ctrl->cabc_off_cmds, CMD_REQ_COMMIT);
 
 	if (ctrl->ds_registered && pinfo->is_pluggable) {
 		mdss_dba_utils_video_off(pinfo->dba_data);
