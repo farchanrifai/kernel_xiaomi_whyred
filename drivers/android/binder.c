@@ -577,6 +577,7 @@ enum {
 	BINDER_LOOPER_STATE_INVALID     = 0x08,
 	BINDER_LOOPER_STATE_WAITING     = 0x10,
 	BINDER_LOOPER_STATE_POLL        = 0x20,
+
 };
 
 /**
@@ -4618,6 +4619,7 @@ static int binder_thread_release(struct binder_proc *proc,
 	}
 
 	binder_inner_proc_unlock(thread->proc);
+
 
 	/*
 	 * This is needed to avoid races between wake_up_poll() above and
