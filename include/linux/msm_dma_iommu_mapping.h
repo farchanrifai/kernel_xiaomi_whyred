@@ -18,8 +18,9 @@
 #include <linux/scatterlist.h>
 #include <linux/dma-mapping.h>
 
+struct msm_iommu_meta;
 struct msm_iommu_data {
-	struct list_head map_list;
+	struct msm_iommu_meta *meta;
 	struct mutex lock;
 };
 
@@ -30,32 +31,32 @@ struct msm_iommu_data {
 * and unmapping.
 */
 int msm_dma_map_sg_attrs(struct device *dev, struct scatterlist *sg, int nents,
-		   enum dma_data_direction dir, struct dma_buf *dmabuf,
+		   enum dma_data_direction dir, struct dma_buf *dma_buf,
 		   struct dma_attrs *attrs);
 
 static inline int msm_dma_map_sg_lazy(struct device *dev,
 			       struct scatterlist *sg, int nents,
 			       enum dma_data_direction dir,
-			       struct dma_buf *dmabuf)
+			       struct dma_buf *dma_buf)
 {
-	return msm_dma_map_sg_attrs(dev, sg, nents, dir, dmabuf, NULL);
+	return msm_dma_map_sg_attrs(dev, sg, nents, dir, dma_buf, NULL);
 }
 
 static inline int msm_dma_map_sg(struct device *dev, struct scatterlist *sg,
 				  int nents, enum dma_data_direction dir,
-				  struct dma_buf *dmabuf)
+				  struct dma_buf *dma_buf)
 {
 	DEFINE_DMA_ATTRS(attrs);
 
 	init_dma_attrs(&attrs);
 	dma_set_attr(DMA_ATTR_NO_DELAYED_UNMAP, &attrs);
-	return msm_dma_map_sg_attrs(dev, sg, nents, dir, dmabuf, &attrs);
+	return msm_dma_map_sg_attrs(dev, sg, nents, dir, dma_buf, &attrs);
 }
 
-void msm_dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
-		      enum dma_data_direction dir, struct dma_buf *dmabuf);
+void msm_dma_unmap_sg(struct device *dev, struct scatterlist *sgl, int nents,
+		      enum dma_data_direction dir, struct dma_buf *dma_buf);
 
-void msm_dma_unmap_all_for_dev(struct device *dev);
+int msm_dma_unmap_all_for_dev(struct device *dev);
 
 /*
  * Below is private function only to be called by framework (ION) and not by
