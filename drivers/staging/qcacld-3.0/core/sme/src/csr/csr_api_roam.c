@@ -183,6 +183,12 @@ static QDF_STATUS csr_sae_callback(tpAniSirGlobal mac_ctx,
 		return QDF_STATUS_E_FAILURE;
 	}
 
+	if (!csr_is_conn_state_connected(mac_ctx, session_id) &&
+	    command == ROAM_SCAN_OFFLOAD_UPDATE_CFG) {
+		sme_debug("Session not in connected state, RSO not sent");
+		return QDF_STATUS_E_FAILURE;
+	}
+
 	sme_debug("vdev_id %d "MAC_ADDRESS_STR"",
 		sae_info->vdev_id,
 		MAC_ADDR_ARRAY(sae_info->peer_mac_addr.bytes));
